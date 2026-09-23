@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PASSENGER
+  DRIVER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum GuildTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RideStatus {
+  REQUESTED
+  DRIVER_ACCEPTED
+  DRIVER_ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REVERSED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String?  @unique
+  phone         String   @unique
+  passwordHash  String?
+  firstName     String
+  lastName      String
+  role          Role     @default(PASSENGER)
+  status        AccountStatus @default(ACTIVE)
+  gender        Gender?
+  guildTier     GuildTier?
+  profilePhoto  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  driverProfile DriverProfile?
+  wallet        Wallet?
+
+  ridesAsPassenger Ride[] @relation("PassengerRides")
+  ridesAsDriver    Ride[] @relation("DriverRides")
+
+  trustedDrivers   TrustedDriver[] @relation("PassengerTrusted")
+  trustedBy        TrustedDriver[] @relation("DriverTrusted")
+}
+
+model DriverProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenseNumber      String?  @unique
+  verificationStatus VerificationStatus @default(PENDING)
+  serviceArea        String?
+  rating             Float    @default(5.0)
+  totalTrips         Int      @default(0)
+  guildPoints        Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  vehicles           Vehicle[]
+}
+
+model Vehicle {
+  id              String   @id @default(uuid())
+  driverProfileId String
+  driverProfile   DriverProfile @relation(fields: [driverProfileId], references: [id])
+  make            String
+  model           String
+  year            Int
+  plateNumber     String   @unique
+  color           String
+  acStatus        Boolean  @default(true)
+  isApproved      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TrustedDriver {
+  id           String   @id @default(uuid())
+  passengerId  String
+  driverId     String
+  passenger    User     @relation("PassengerTrusted", fields: [passengerId], references: [id])
+  driver       User     @relation("DriverTrusted", fields: [driverId], references: [id])
+  addedAt      DateTime @default(now())
+
+  @@unique([passengerId, driverId])
+}
+
+model Ride {
+  id              String     @id @default(uuid())
+  passengerId     String
+  driverId        String?
+  passenger       User       @relation("PassengerRides", fields: [passengerId], references: [id])
+  driver          User?      @relation("DriverRides", fields: [driverId], references: [id])
+  status          RideStatus @default(REQUESTED)
+  
+  pickupLat       Float
+  pickupLng       Float
+  pickupAddress   String
+  
+  dropoffLat      Float
+  dropoffLng      Float
+  dropoffAddress  String
+  
+  fareEstimated   Float?
+  fareActual      Float?
+  distanceKm      Float?
+  durationMins    Int?
+  
+  preferencesJson Json?
+  flightNumber    String?
+  isAirportConcierge Boolean @default(false)
+  safeSisterActive Boolean @default(false)
+  
+  requestedAt     DateTime   @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  
+  audioRecordings AudioRecording[]
+}
+
+model Wallet {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id])
+  balance      Float    @default(0.0)
+  currency     String   @default("NGN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  amount      Float
+  type        TransactionType
+  status      TransactionStatus @default(COMPLETED)
+  reference   String   @unique
+  description String?
+  isEscrow    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model AudioRecording {
+  id             String   @id @default(uuid())
+  rideId         String
+  ride           Ride     @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  s3BucketKey    String
+  encryptedHash  String
+  uploadedAt     DateTime @default(now())
+}
