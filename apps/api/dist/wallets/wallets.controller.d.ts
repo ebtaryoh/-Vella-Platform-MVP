@@ -10,7 +10,11 @@ export declare class WalletsController {
     }): Promise<any>;
     fundWallet(req: any, payload: {
         amount: number;
-    }): Promise<any>;
+    }): Promise<{
+        authorization_url: string;
+        access_code: string;
+        reference: string;
+    }>;
     paystackWebhook(signature: string, payload: any): Promise<{
         status: string;
     }>;

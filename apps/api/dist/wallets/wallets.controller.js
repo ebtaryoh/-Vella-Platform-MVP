@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,11 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
-import { Controller, Post, Body, UseGuards, Headers, Req, BadRequestException } from '@nestjs/common';
-import { WalletsService } from './wallets.service';
-import { PaystackService } from './paystack.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletsController = void 0;
+const common_1 = require("@nestjs/common");
+const wallets_service_1 = require("./wallets.service");
+const paystack_service_1 = require("./paystack.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let WalletsController = class WalletsController {
     walletsService;
     paystackService;
@@ -31,10 +33,10 @@ let WalletsController = class WalletsController {
     }
     async paystackWebhook(signature, payload) {
         if (!signature)
-            throw new BadRequestException('Missing signature');
+            throw new common_1.BadRequestException('Missing signature');
         const isValid = this.paystackService.verifySignature(signature, payload);
         if (!isValid)
-            throw new BadRequestException('Invalid signature');
+            throw new common_1.BadRequestException('Invalid signature');
         const event = payload.event;
         if (event === 'charge.success') {
             const { reference, amount } = payload.data;
@@ -43,34 +45,34 @@ let WalletsController = class WalletsController {
         return { status: 'ok' };
     }
 };
+exports.WalletsController = WalletsController;
 __decorate([
-    UseGuards(JwtAuthGuard),
-    Post('escrow/resolve'),
-    __param(0, Body()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('escrow/resolve'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], WalletsController.prototype, "resolveEscrow", null);
 __decorate([
-    UseGuards(JwtAuthGuard),
-    Post('fund'),
-    __param(0, Req()),
-    __param(1, Body()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('fund'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], WalletsController.prototype, "fundWallet", null);
 __decorate([
-    Post('webhook/paystack'),
-    __param(0, Headers('x-paystack-signature')),
-    __param(1, Body()),
+    (0, common_1.Post)('webhook/paystack'),
+    __param(0, (0, common_1.Headers)('x-paystack-signature')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], WalletsController.prototype, "paystackWebhook", null);
-WalletsController = __decorate([
-    Controller('api/v1/wallets'),
-    __metadata("design:paramtypes", [typeof (_a = typeof WalletsService !== "undefined" && WalletsService) === "function" ? _a : Object, typeof (_b = typeof PaystackService !== "undefined" && PaystackService) === "function" ? _b : Object])
+exports.WalletsController = WalletsController = __decorate([
+    (0, common_1.Controller)('api/v1/wallets'),
+    __metadata("design:paramtypes", [wallets_service_1.WalletsService, paystack_service_1.PaystackService])
 ], WalletsController);
-export { WalletsController };
 //# sourceMappingURL=wallets.controller.js.map

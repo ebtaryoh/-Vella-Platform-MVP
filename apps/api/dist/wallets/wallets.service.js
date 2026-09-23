@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaystackService } from './paystack.service';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletsService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../prisma/prisma.service");
+const paystack_service_1 = require("./paystack.service");
 let WalletsService = class WalletsService {
     prisma;
     paystackService;
@@ -20,7 +22,7 @@ let WalletsService = class WalletsService {
     }
     async resolveEscrow(rideId, amountToRefund) {
         if (amountToRefund <= 0) {
-            throw new BadRequestException('Refund amount must be greater than zero');
+            throw new common_1.BadRequestException('Refund amount must be greater than zero');
         }
         return await this.prisma.$transaction(async (tx) => {
             const ride = await tx.ride.findUnique({
@@ -28,15 +30,15 @@ let WalletsService = class WalletsService {
                 include: { driver: true, passenger: true }
             });
             if (!ride || !ride.driverId) {
-                throw new NotFoundException('Ride or Driver not found');
+                throw new common_1.NotFoundException('Ride or Driver not found');
             }
             const passengerWallet = await tx.wallet.findUnique({ where: { userId: ride.passengerId } });
             const driverWallet = await tx.wallet.findUnique({ where: { userId: ride.driverId } });
             if (!passengerWallet || !driverWallet) {
-                throw new BadRequestException('Wallet not found for driver or passenger');
+                throw new common_1.BadRequestException('Wallet not found for driver or passenger');
             }
             if (passengerWallet.balance < amountToRefund) {
-                throw new BadRequestException('Passenger wallet has insufficient funds to cover exact change');
+                throw new common_1.BadRequestException('Passenger wallet has insufficient funds to cover exact change');
             }
             const updatedPassengerWallet = await tx.wallet.update({
                 where: { id: passengerWallet.id },
@@ -75,11 +77,11 @@ let WalletsService = class WalletsService {
     }
     async fundWalletInitiate(userId, email, amount) {
         if (amount < 100) {
-            throw new BadRequestException('Minimum funding amount is ₦100');
+            throw new common_1.BadRequestException('Minimum funding amount is ₦100');
         }
         const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
         if (!wallet)
-            throw new NotFoundException('Wallet not found');
+            throw new common_1.NotFoundException('Wallet not found');
         const reference = `FUND_${wallet.id}_${Date.now()}`;
         const paystackInit = await this.paystackService.initializeTransaction(email, amount * 100, reference);
         await this.prisma.transaction.create({
@@ -113,9 +115,9 @@ let WalletsService = class WalletsService {
         });
     }
 };
-WalletsService = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [typeof (_a = typeof PrismaService !== "undefined" && PrismaService) === "function" ? _a : Object, typeof (_b = typeof PaystackService !== "undefined" && PaystackService) === "function" ? _b : Object])
+exports.WalletsService = WalletsService;
+exports.WalletsService = WalletsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, paystack_service_1.PaystackService])
 ], WalletsService);
-export { WalletsService };
 //# sourceMappingURL=wallets.service.js.map

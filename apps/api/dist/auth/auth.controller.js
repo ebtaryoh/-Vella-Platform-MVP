@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,9 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { AuthService } from './auth.service';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const common_1 = require("@nestjs/common");
+const auth_service_1 = require("./auth.service");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -25,24 +27,24 @@ let AuthController = class AuthController {
         return this.authService.login(body);
     }
 };
+exports.AuthController = AuthController;
 __decorate([
-    Post('register/passenger'),
-    __param(0, Body()),
+    (0, common_1.Post)('register/passenger'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "registerPassenger", null);
 __decorate([
-    Post('login'),
-    HttpCode(HttpStatus.OK),
-    __param(0, Body()),
+    (0, common_1.Post)('login'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
-AuthController = __decorate([
-    Controller('v1/auth'),
-    __metadata("design:paramtypes", [typeof (_a = typeof AuthService !== "undefined" && AuthService) === "function" ? _a : Object])
+exports.AuthController = AuthController = __decorate([
+    (0, common_1.Controller)('v1/auth'),
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
-export { AuthController };
 //# sourceMappingURL=auth.controller.js.map

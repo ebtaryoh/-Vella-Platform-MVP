@@ -6,5 +6,8 @@ export declare class SafetyController {
         rideId: string;
         s3BucketKey: string;
         fileHash: string;
-    }): Promise<any>;
+    }): Promise<{
+        message: string;
+        recordingId: any;
+    }>;
 }

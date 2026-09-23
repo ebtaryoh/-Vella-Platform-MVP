@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { AviationService } from '../aviation/aviation.service';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RidesService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../prisma/prisma.service");
+const aviation_service_1 = require("../aviation/aviation.service");
 let RidesService = class RidesService {
     prisma;
     aviation;
@@ -47,7 +49,7 @@ let RidesService = class RidesService {
         if (safeSisterActive) {
             const passenger = await this.prisma.user.findUnique({ where: { id: passengerId } });
             if (passenger?.gender !== 'FEMALE') {
-                throw new BadRequestException('Vella SafeSister is strictly reserved for female passengers.');
+                throw new common_1.BadRequestException('Vella SafeSister is strictly reserved for female passengers.');
             }
             console.log(`[DISPATCH] STRICT MATCHING: Searching ONLY for FEMALE drivers near [${pickupLat}, ${pickupLng}]`);
         }
@@ -76,9 +78,9 @@ let RidesService = class RidesService {
         };
     }
 };
-RidesService = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [typeof (_a = typeof PrismaService !== "undefined" && PrismaService) === "function" ? _a : Object, typeof (_b = typeof AviationService !== "undefined" && AviationService) === "function" ? _b : Object])
+exports.RidesService = RidesService;
+exports.RidesService = RidesService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, aviation_service_1.AviationService])
 ], RidesService);
-export { RidesService };
 //# sourceMappingURL=rides.service.js.map

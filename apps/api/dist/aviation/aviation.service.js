@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,12 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var AviationService_1;
-var _a;
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AviationService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../prisma/prisma.service");
 let AviationService = AviationService_1 = class AviationService {
     prisma;
-    logger = new Logger(AviationService_1.name);
+    logger = new common_1.Logger(AviationService_1.name);
     constructor(prisma) {
         this.prisma = prisma;
     }
@@ -33,9 +35,9 @@ let AviationService = AviationService_1 = class AviationService {
         return baseFare + mma2Toll + meetAndGreetFee;
     }
 };
-AviationService = AviationService_1 = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [typeof (_a = typeof PrismaService !== "undefined" && PrismaService) === "function" ? _a : Object])
+exports.AviationService = AviationService;
+exports.AviationService = AviationService = AviationService_1 = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], AviationService);
-export { AviationService };
 //# sourceMappingURL=aviation.service.js.map

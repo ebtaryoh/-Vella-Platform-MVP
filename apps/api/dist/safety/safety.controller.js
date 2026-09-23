@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,10 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { SafetyService } from './safety.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SafetyController = void 0;
+const common_1 = require("@nestjs/common");
+const safety_service_1 = require("./safety.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let SafetyController = class SafetyController {
     safetyService;
     constructor(safetyService) {
@@ -23,17 +25,17 @@ let SafetyController = class SafetyController {
         return this.safetyService.registerAudioUpload(payload.rideId, payload.s3BucketKey, payload.fileHash);
     }
 };
+exports.SafetyController = SafetyController;
 __decorate([
-    UseGuards(JwtAuthGuard),
-    Post('audio-upload'),
-    __param(0, Body()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('audio-upload'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SafetyController.prototype, "registerAudioUpload", null);
-SafetyController = __decorate([
-    Controller('api/v1/safety'),
-    __metadata("design:paramtypes", [typeof (_a = typeof SafetyService !== "undefined" && SafetyService) === "function" ? _a : Object])
+exports.SafetyController = SafetyController = __decorate([
+    (0, common_1.Controller)('api/v1/safety'),
+    __metadata("design:paramtypes", [safety_service_1.SafetyService])
 ], SafetyController);
-export { SafetyController };
 //# sourceMappingURL=safety.controller.js.map
